@@ -1,5 +1,5 @@
-import { IOrder } from '../types';
-import { Api } from './base/api';
+import { IOrder } from '../../types';
+import { Api } from '../base/api';
 
 export class ApiOrder {
 	private api: Api;

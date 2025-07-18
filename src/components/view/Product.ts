@@ -1,8 +1,8 @@
-import { IProduct } from '../types/index';
-import { CDN_URL } from '../utils/constants';
-import { ensureElement } from '../utils/utils';
-import { Component } from './base/component';
-import { EventEmitter } from './base/events';
+import { IProduct } from '../../types/index';
+import { CDN_URL, settings } from '../../utils/constants';
+import { ensureElement } from '../../utils/utils';
+import { Component } from '../base/component';
+import { EventEmitter } from '../base/events';
 
 export class Product extends Component<IProduct> {
 	protected titleElement: HTMLElement;
@@ -17,13 +17,13 @@ export class Product extends Component<IProduct> {
 
 	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
-		this.titleElement = ensureElement('.card__title', this.container);
-		this.categoryElement = ensureElement('.card__category', this.container);
+		this.titleElement = ensureElement(settings.productSettings.title, this.container);
+		this.categoryElement = ensureElement(settings.productSettings.category, this.container);
 		this.imageElement = ensureElement<HTMLImageElement>(
-			'.card__image',
+			settings.productSettings.image,
 			this.container
 		);
-		this.priceElement = ensureElement('.card__price', this.container);
+		this.priceElement = ensureElement(settings.productSettings.price, this.container);
 		container.addEventListener('click', (event) => {
 			event.stopPropagation();
 			this.openProduct();
@@ -39,7 +39,7 @@ export class Product extends Component<IProduct> {
 			price: this.price,
 			description: this.description
 		};
-		this.events.emit('product:open', product);
+		this.events.emit(settings.events.productOpen, product);
 	}
 
 	set id(value: string) {
@@ -52,7 +52,6 @@ export class Product extends Component<IProduct> {
 
 	set title(value: string) {
 		this.setText(this.titleElement, value);
-		this.imageElement.alt = value;
 	}
 
 	get title(): string {
@@ -71,7 +70,7 @@ export class Product extends Component<IProduct> {
 		if (value !== null) {
 			this.setText(this.priceElement, `${value} синапсов`);
 		} else {
-			this.setText(this.priceElement, 'Бесценно');
+			this.setText(this.priceElement, settings.text.invaluable);
 		}
 		this._price = value;
 	}
@@ -81,7 +80,7 @@ export class Product extends Component<IProduct> {
 	}
 
 	set image(src: string) {
-		this.imageElement.src = `${CDN_URL}${src}`;
+		this.setImage(this.imageElement, `${CDN_URL}${src}`, this.title);
 	}
 
 	get image(): string {

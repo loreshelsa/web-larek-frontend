@@ -1,7 +1,8 @@
-import { Component } from './base/component';
-import { EventEmitter } from './base/events';
-import { ensureElement } from '../utils/utils';
-import { IProduct } from '../types';
+import { Component } from '../../base/component';
+import { EventEmitter } from '../../base/events';
+import { ensureElement } from '../../../utils/utils';
+import { IProduct } from '../../../types';
+import { settings } from '../../../utils/constants';
 
 export interface ICardPreviewModal {
 	id: string;
@@ -26,30 +27,30 @@ export class CardPreviewModal extends Component<ICardPreviewModal> {
 
 	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
-		this.titleElement = ensureElement('.card__title', this.container);
-		this.categoryElement = ensureElement('.card__category', this.container);
+		this.titleElement = ensureElement(settings.cardSettings.title, this.container);
+		this.categoryElement = ensureElement(settings.cardSettings.category, this.container);
 		this.imageElement = ensureElement<HTMLImageElement>(
-			'.card__image',
+			settings.cardSettings.image,
 			this.container
 		);
-		this.priceElement = ensureElement('.card__price', this.container);
+		this.priceElement = ensureElement(settings.cardSettings.price, this.container);
 		this.addBasket = ensureElement<HTMLButtonElement>(
-			'.card__button',
+			settings.cardSettings.btn,
 			this.container
 		);
 
-		this.descriptionElement = ensureElement('.card__text', this.container);
+		this.descriptionElement = ensureElement(settings.cardSettings.description, this.container);
 
 		this.addBasket.addEventListener('click', (event) => {
 			event.stopPropagation();
 			if (!this.added) {
 				this.addProductToBasket();
 				this.added = true;
-				this.setText(this.addBasket, 'Удалить из корзины');
+				this.setText(this.addBasket, settings.text.btnDeleteFromBasket);
 			} else {
 				this.removeProductFromBasket();
 				this.added = false;
-				this.setText(this.addBasket, 'Купить');
+				this.setText(this.addBasket, settings.text.btnBuyProduct);
 			}
 		});
 	}
@@ -62,11 +63,11 @@ export class CardPreviewModal extends Component<ICardPreviewModal> {
 			image: this.image,
 			price: this.price,
 		};
-		this.events.emit('basket:add', product);
+		this.events.emit(settings.events.basketAdd, product);
 	}
 
 	removeProductFromBasket() {
-		this.events.emit('basket:remove', { id: this._id, update: false });
+		this.events.emit(settings.events.basketRemove, { id: this._id, update: false });
 	}
 
 	set id(value: string) {
@@ -79,7 +80,6 @@ export class CardPreviewModal extends Component<ICardPreviewModal> {
 
 	set title(value: string) {
 		this.setText(this.titleElement, value);
-		this.imageElement.alt = value;
 	}
 
 	get title(): string {
@@ -98,7 +98,7 @@ export class CardPreviewModal extends Component<ICardPreviewModal> {
 		if (value !== null) {
 			this.setText(this.priceElement, `${value} синапсов`);
 		} else {
-			this.setText(this.priceElement, 'Бесценно');
+			this.setText(this.priceElement, settings.text.invaluable);
 		}
 		this._price = value;
 	}
@@ -108,7 +108,7 @@ export class CardPreviewModal extends Component<ICardPreviewModal> {
 	}
 
 	set image(src: string) {
-		this.imageElement.src = src;
+		this.setImage(this.imageElement, src, this.title);
 	}
 
 	get image(): string {
@@ -122,9 +122,9 @@ export class CardPreviewModal extends Component<ICardPreviewModal> {
 	set inBasket(value: boolean) {
 		this.added = value;
 		if (this.added) {
-			this.setText(this.addBasket, 'Удалить из корзины');
+			this.setText(this.addBasket, settings.text.btnDeleteFromBasket);
 		} else {
-			this.setText(this.addBasket, 'Купить');
+			this.setText(this.addBasket, settings.text.btnBuyProduct);
 		}
 	}
 }

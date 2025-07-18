@@ -1,7 +1,7 @@
-import { IProduct } from '../types';
-import { ensureElement } from '../utils/utils';
-import { Component } from './base/component';
-import { EventEmitter } from './base/events';
+import { settings } from '../../utils/constants';
+import { ensureElement } from '../../utils/utils';
+import { Component } from '../base/component';
+import { EventEmitter } from '../base/events';
 
 interface IPage {
 	productsList: HTMLElement[];
@@ -16,16 +16,16 @@ export class Page extends Component<IPage> {
 	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
 
-		this.productsContainer = ensureElement('.gallery', this.container);
+		this.productsContainer = ensureElement(settings.pageSettings.pageContainer, this.container);
 		this.totalProductsBasket = ensureElement(
-			'.header__basket-counter',
+			settings.pageSettings.headerBasketCounter,
 			this.container
 		);
-		this.basketIcon = ensureElement('.header__basket', this.container);
+		this.basketIcon = ensureElement(settings.pageSettings.headerBasket, this.container);
 
 		this.basketIcon.addEventListener('click', (event) => {
 			event.stopPropagation();
-      this.events.emit('basket:open');
+      this.events.emit(settings.events.basketOpen);
 		});
 	}
 

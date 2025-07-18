@@ -1,7 +1,7 @@
-import { IProduct } from '../types';
-import { ensureElement } from '../utils/utils';
-import { Component } from './base/component';
-import { EventEmitter } from './base/events';
+import { settings } from '../../../utils/constants';
+import { ensureElement } from '../../../utils/utils';
+import { Component } from '../../base/component';
+import { EventEmitter } from '../../base/events';
 
 interface IBasketModal {
 	products: HTMLElement[];
@@ -17,27 +17,27 @@ export class BasketModal extends Component<IBasketModal> {
 	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
 		this.productContainer = ensureElement<HTMLUListElement>(
-			'.basket__list',
+			settings.basketSettings.itemsList,
 			this.container
 		);
 		this.orderButton = ensureElement<HTMLButtonElement>(
-			'.basket__button',
+			settings.basketSettings.btnBasket,
 			this.container
 		);
-		this.totalPriceElement = ensureElement('.basket__price', this.container);
+		this.totalPriceElement = ensureElement(settings.basketSettings.basketPrice, this.container);
 		this.orderButton.addEventListener('click', (event) => {
 			event.stopPropagation();
-			events.emit('order:start');
+			events.emit(settings.events.orderStart);
 		});
 	}
 
 	set products(value: HTMLElement[]) {
 		if (value.length) {
 			this.productContainer.replaceChildren(...value);
-			this.orderButton.removeAttribute('disabled');
+			this.orderButton.removeAttribute(settings.basketSettings.disabledClass);
 		} else {
-			this.orderButton.setAttribute('disabled', 'disabled');
-			this.setText(this.productContainer, 'Корзина пуста');
+			this.orderButton.setAttribute(settings.basketSettings.disabledClass, settings.basketSettings.disabledClass);
+			this.setText(this.productContainer, settings.text.emptyBasket);
 		}
 	}
 	set totalPrice(value: number) {

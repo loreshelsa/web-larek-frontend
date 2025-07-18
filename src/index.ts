@@ -1,23 +1,23 @@
 import { App } from './components/App';
-import { Product } from './components/Product';
+import { Product } from './components/view/Product';
 import './scss/styles.scss';
-import { cloneTemplate } from './utils/utils';
-import { Page } from './components/Page';
+import { cloneTemplate, ensureElement } from './utils/utils';
+import { Page } from './components/view/Page';
 import { EventEmitter } from './components/base/events';
-import { ProductModel } from './components/ProductModel';
-import { Modal } from './components/Modal';
-import { CardPreviewModal } from './components/CardPreviewModal';
-import { BasketModel } from './components/BasketModel';
+import { ProductModel } from './components/model/ProductModel';
+import { Modal } from './components/view/Modals/Modal';
+import { CardPreviewModal } from './components/view/Modals/CardPreviewModal';
+import { BasketModel } from './components/model/BasketModel';
 import { IOrder, IProduct } from './types';
-import { BasketModal } from './components/BasketModal';
-import { CardBasket } from './components/CardBasket';
-import { OrderModal } from './components/OrderModal';
-import { ContactsModal } from './components/ContactsModal';
-import { PaymentSuccessModal } from './components/PaymentSuccessModal';
-import { OrderModel } from './components/OrderModel';
-import { ApiOrder } from './components/ApiOrder';
+import { BasketModal } from './components/view/Modals/BasketModal';
+import { CardBasket } from './components/view/CardBasket';
+import { OrderModal } from './components/view/Modals/OrderModal';
+import { ContactsModal } from './components/view/Modals/ContactsModal';
+import { PaymentSuccessModal } from './components/view/Modals/PaymentSuccessModal';
+import { OrderModel } from './components/model/OrderModel';
+import { ApiOrder } from './components/Api/ApiOrder';
 import { Api } from './components/base/api';
-import { API_URL } from './utils/constants';
+import { API_URL, settings } from './utils/constants';
 
 const events = new EventEmitter();
 const productModel = new ProductModel();
@@ -27,42 +27,55 @@ const apiOrder = new ApiOrder(api);
 
 const app = new App(events, productModel);
 const page = new Page(
-	document.querySelector('.page__wrapper') as HTMLElement,
+	ensureElement(settings.pageSettings.pageWrapper, document.body) as HTMLElement,
 	events
 );
-const template = document.querySelector('#card-catalog') as HTMLTemplateElement;
-const cardPreviewTemplate = document.querySelector(
-	'#card-preview'
+const template = ensureElement<HTMLTemplateElement>(
+	settings.catalogTemplate, document.body
+) as HTMLTemplateElement;
+
+const cardPreviewTemplate = ensureElement<HTMLTemplateElement>(
+	settings.cardTemplate, document.body
 ) as HTMLTemplateElement;
 
 const modal = new Modal(
-	document.querySelector('#modal-container') as HTMLElement,
+	ensureElement(settings.modalTemplate, document.body) as HTMLElement,
 	events
 );
 const cardPreviewModal = new CardPreviewModal(
 	cloneTemplate(cardPreviewTemplate),
 	events
 );
-const basketTemplate = document.querySelector('#basket') as HTMLTemplateElement;
-const basketCardTemplate = document.querySelector(
-	'#card-basket'
+const basketTemplate = ensureElement<HTMLTemplateElement>(
+	settings.basketTemplate,
+	document.body
+);
+const basketCardTemplate = ensureElement<HTMLTemplateElement>(
+	settings.basketCardTempate,
+	document.body
 ) as HTMLTemplateElement;
+
 const basketModal = new BasketModal(cloneTemplate(basketTemplate), events);
 
-const orderTemplate = document.querySelector('#order') as HTMLTemplateElement;
+const orderTemplate = ensureElement<HTMLTemplateElement>(
+	settings.orderTemplate, document.body
+) as HTMLTemplateElement;
+
 const orderModal = new OrderModal(cloneTemplate(orderTemplate), events);
 
-const contactsTemplate = document.querySelector(
-	'#contacts'
+const contactsTemplate = ensureElement<HTMLTemplateElement>(
+	settings.contactsTemplate, document.body
 ) as HTMLTemplateElement;
+
 const contactsModal = new ContactsModal(
 	cloneTemplate(contactsTemplate),
 	events
 );
 
-const finishPaymentTemplate = document.querySelector(
-	'#success'
+const finishPaymentTemplate = ensureElement<HTMLTemplateElement>(
+	settings.finishPaymentTemplate, document.body
 ) as HTMLTemplateElement;
+
 const finishPaymentModal = new PaymentSuccessModal(
 	cloneTemplate(finishPaymentTemplate),
 	events
@@ -70,7 +83,8 @@ const finishPaymentModal = new PaymentSuccessModal(
 
 const orderModel = new OrderModel();
 
-events.on('products:changed', () => {
+
+events.on(settings.events.productsChanged, () => {
 	const productsHTMLArray = productModel
 		.getProducts()
 		.map((product) =>
@@ -82,7 +96,7 @@ events.on('products:changed', () => {
 	});
 });
 
-events.on('product:open', (product: IProduct) => {
+events.on(settings.events.productOpen, (product: IProduct) => {
 	const inBasket = basketModel.productsFromBasket.some(
 		(item) => item.id === product.id
 	);
@@ -95,23 +109,23 @@ events.on('product:open', (product: IProduct) => {
 	modal.open();
 });
 
-events.on('modal:close', () => {
+events.on(settings.events.modalClose, () => {
 	modal.close();
 });
 
-events.on('basket:add', (product: IProduct) => {
+events.on(settings.events.basketAdd, (product: IProduct) => {
 	basketModel.addProductToBasket(product);
-	events.emit('basket:changed');
+	events.emit(settings.events.basketChanged);
 });
 
-events.on('basket:changed', () => {
+events.on(settings.events.basketChanged, () => {
 	const productsTotal = basketModel.countProducts;
 	page.render({
 		totalProducts: productsTotal,
 	});
 });
 
-events.on('basket:open', () => {
+events.on(settings.events.basketOpen, () => {
 	const products = basketModel.productsFromBasket;
 	const productsHTMLArray = products.map((item, index) =>
 		new CardBasket(cloneTemplate(basketCardTemplate), events).render({
@@ -131,24 +145,24 @@ events.on('basket:open', () => {
 });
 
 events.on(
-	'basket:remove',
+	settings.events.basketRemove,
 	({ id, update }: { id: string; update: boolean }) => {
 		basketModel.deleteItem(id);
 		if (update) {
-			events.emit('basket:open');
+			events.emit(settings.events.basketOpen);
 		}
-		events.emit('basket:changed');
+		events.emit(settings.events.basketChanged);
 	}
 );
 
-events.on('order:start', () => {
+events.on(settings.events.orderStart, () => {
 	const orderModalContent = orderModal.render();
 	modal.render({ content: orderModalContent });
 	modal.open();
 });
 
 events.on(
-	'order:firstStepComplete',
+	settings.events.orderFirstStepComplete,
 	({ address, paymentMethod }: { address: string; paymentMethod: string }) => {
 		orderModel.setOrderInfo(paymentMethod, address);
 		const contactsModalContent = contactsModal.render();
@@ -158,7 +172,7 @@ events.on(
 );
 
 events.on(
-	'order:submit',
+	settings.events.orderSubmit,
 	({ phoneNumber, email }: { phoneNumber: string; email: string }) => {
 		orderModel.setContactInfo(phoneNumber, email);
 		const orderInfo = orderModel.collectInfo();
@@ -172,12 +186,12 @@ events.on(
 		} as IOrder;
 
 		apiOrder.submitOrder(request).then(() => {
-			events.emit('order:completed');
+			events.emit(settings.events.orderCompleted);
 		});
 	}
 );
 
-events.on('order:completed', () => {
+events.on(settings.events.orderCompleted, () => {
 	const finishPaymentModalContent = finishPaymentModal.render({
 		total: basketModel.totalPrice,
 	});
@@ -185,9 +199,9 @@ events.on('order:completed', () => {
 	modal.open();
 });
 
-events.on('order:success', () => {
+events.on(settings.events.orderSuccess, () => {
 	basketModel.clear();
 	orderModel.clear();
-	events.emit('basket:changed');
-	events.emit('modal:close');
+	events.emit(settings.events.basketChanged);
+	events.emit(settings.events.modalClose);
 });

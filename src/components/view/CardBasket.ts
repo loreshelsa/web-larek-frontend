@@ -1,7 +1,8 @@
-import { IProduct } from '../types';
-import { ensureElement } from '../utils/utils';
-import { Component } from './base/component';
-import { EventEmitter } from './base/events';
+import { IProduct } from '../../types';
+import { settings } from '../../utils/constants';
+import { ensureElement } from '../../utils/utils';
+import { Component } from '../base/component';
+import { EventEmitter } from '../base/events';
 
 interface ICardBasket {
   id: string;
@@ -20,16 +21,16 @@ export class CardBasket extends Component<ICardBasket> {
 
 	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
-		this.titleCardElement = ensureElement('.card__title', this.container);
-		this.indexElement = ensureElement('.basket__item-index', this.container);
-		this.priceCardElement = ensureElement('.card__price', this.container);
+		this.titleCardElement = ensureElement(settings.basketCardSettings.title, this.container);
+		this.indexElement = ensureElement(settings.basketCardSettings.itemIndex, this.container);
+		this.priceCardElement = ensureElement(settings.basketCardSettings.price, this.container);
 		this.removeButton = ensureElement<HTMLButtonElement>(
-			'.basket__item-delete',
+			settings.basketCardSettings.deleteBtn,
 			this.container
 		);
     this.removeButton.addEventListener('click', (event)=>{
       event.stopPropagation();
-      events.emit('basket:remove', {id: this._id, update: true});
+      events.emit(settings.events.basketRemove, {id: this._id, update: true});
     })
 	}
 
@@ -49,7 +50,7 @@ export class CardBasket extends Component<ICardBasket> {
     if (value !== null) {
 			this.setText(this.priceCardElement, `${value} синапсов`);
 		} else {
-			this.setText(this.priceCardElement, 'Бесценно');
+			this.setText(this.priceCardElement, settings.text.invaluable);
 		}
 	}
 }

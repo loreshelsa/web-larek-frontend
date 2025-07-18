@@ -1,6 +1,7 @@
-import { ensureElement } from '../utils/utils';
-import { Component } from './base/component';
-import { EventEmitter } from './base/events';
+import { settings } from '../../../utils/constants';
+import { ensureElement } from '../../../utils/utils';
+import { Component } from '../../base/component';
+import { EventEmitter } from '../../base/events';
 
 interface IContactsModal {
 	phoneNumber: string;
@@ -19,25 +20,28 @@ export class ContactsModal extends Component<IContactsModal> {
 	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
 		this.emailInputElement = ensureElement(
-			'.form__input[name=email]',
+			settings.contactsSettings.email,
 			this.container
 		);
 		this.phoneInputElement = ensureElement(
-			'.form__input[name=phone]',
+			settings.contactsSettings.phone,
 			this.container
 		);
 
 		this.submitButton = ensureElement<HTMLButtonElement>(
-			'.button',
+			settings.contactsSettings.contactBtn,
 			this.container
 		);
 
-		this.errorMessageElement = ensureElement('.form__errors', this.container);
+		this.errorMessageElement = ensureElement(
+			settings.contactsSettings.errorContact,
+			this.container
+		);
 
 		this.container.addEventListener('submit', (event) => {
 			event.stopPropagation();
 			event.preventDefault();
-			events.emit('order:submit', {
+			events.emit(settings.events.orderSubmit, {
 				email: this.email,
 				phoneNumber: this.phoneNumber,
 			});
@@ -49,10 +53,7 @@ export class ContactsModal extends Component<IContactsModal> {
 			if (this.email.length) {
 				this.setText(this.errorMessageElement, '');
 			} else {
-				this.setText(
-					this.errorMessageElement,
-					'Необходимо указать электронный адрес'
-				);
+				this.setText(this.errorMessageElement, settings.text.errorMessageEmail);
 			}
 			this.checkInputsEmpty();
 		});
@@ -63,7 +64,7 @@ export class ContactsModal extends Component<IContactsModal> {
 			if (this.phoneNumber.length) {
 				this.setText(this.errorMessageElement, '');
 			} else {
-				this.setText(this.errorMessageElement, 'Необходимо указать телефон');
+				this.setText(this.errorMessageElement, settings.text.errorMessagePhone);
 			}
 			this.checkInputsEmpty();
 		});

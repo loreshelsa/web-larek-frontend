@@ -1,4 +1,4 @@
-import { IOrder } from '../types';
+import { IOrder } from '../../types';
 
 export class OrderModel {
 	protected address: string;

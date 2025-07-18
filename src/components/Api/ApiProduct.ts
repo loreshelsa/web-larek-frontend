@@ -1,5 +1,5 @@
-import { IProductResponse } from '../types';
-import { Api } from './base/api';
+import { IProductResponse } from '../../types';
+import { Api } from '../base/api';
 
 export class ApiProduct {
 	private api: Api;

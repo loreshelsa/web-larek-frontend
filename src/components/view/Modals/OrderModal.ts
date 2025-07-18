@@ -1,6 +1,7 @@
-import { ensureElement } from '../utils/utils';
-import { Component } from './base/component';
-import { EventEmitter } from './base/events';
+import { settings } from '../../../utils/constants';
+import { ensureElement } from '../../../utils/utils';
+import { Component } from '../../base/component';
+import { EventEmitter } from '../../base/events';
 
 interface IOrderModal {
 	address: string;
@@ -21,22 +22,22 @@ export class OrderModal extends Component<IOrderModal> {
 		super(container);
 
 		this.addressInputElement = ensureElement<HTMLInputElement>(
-			'.form__input',
+			settings.orderSettings.orderForm,
 			this.container
 		);
 		this.paymentCardMethodElement = ensureElement<HTMLButtonElement>(
-			'.button_alt[name=card]',
+			settings.orderSettings.cardPay,
 			this.container
 		);
 		this.paymentCashMethodElement = ensureElement<HTMLButtonElement>(
-			'.button_alt[name=cash]',
+			settings.orderSettings.cashPay,
 			this.container
 		);
 		this.submitButton = ensureElement<HTMLButtonElement>(
-			'.order__button',
+			settings.orderSettings.orderBtn,
 			this.container
 		);
-		this.errorMessageElement = ensureElement('.form__errors', this.container);
+		this.errorMessageElement = ensureElement(settings.orderSettings.error, this.container);
 
 		this.setActiveButton(
 			this.paymentCardMethodElement,
@@ -47,7 +48,7 @@ export class OrderModal extends Component<IOrderModal> {
 			event.stopPropagation();
 			event.preventDefault();
 			if (this.address && this.paymentMethod) {
-				events.emit('order:firstStepComplete', {
+				events.emit(settings.events.orderFirstStepComplete, {
 					address: this.address,
 					paymentMethod: this.paymentMethod,
 				});
@@ -62,7 +63,7 @@ export class OrderModal extends Component<IOrderModal> {
 				this.setText(this.errorMessageElement, '');
 				this.setDisabled(this.submitButton, false);
 			} else {
-				this.setText(this.errorMessageElement, 'Необходимо указать адрес');
+				this.setText(this.errorMessageElement, settings.text.errorMessageAddress);
 				this.setDisabled(this.submitButton, true);
 			}
 		});
@@ -89,7 +90,7 @@ export class OrderModal extends Component<IOrderModal> {
 		inactiveBtn: HTMLButtonElement
 	) {
 		this.paymentMethod = activeBtn.getAttribute('name');
-		activeBtn.classList.add('button_alt-active');
-		inactiveBtn.classList.remove('button_alt-active');
+		activeBtn.classList.add(settings.orderSettings.activeBtn);
+		inactiveBtn.classList.remove(settings.orderSettings.activeBtn);
 	}
 }
