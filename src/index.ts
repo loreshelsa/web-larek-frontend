@@ -83,7 +83,6 @@ const finishPaymentModal = new PaymentSuccessModal(
 
 const orderModel = new OrderModel();
 
-
 events.on(settings.events.productsChanged, () => {
 	const productsHTMLArray = productModel
 		.getProducts()
