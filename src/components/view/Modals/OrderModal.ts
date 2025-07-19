@@ -37,7 +37,10 @@ export class OrderModal extends Component<IOrderModal> {
 			settings.orderSettings.orderBtn,
 			this.container
 		);
-		this.errorMessageElement = ensureElement(settings.orderSettings.error, this.container);
+		this.errorMessageElement = ensureElement(
+			settings.orderSettings.error,
+			this.container
+		);
 
 		this.setActiveButton(
 			this.paymentCardMethodElement,
@@ -63,7 +66,10 @@ export class OrderModal extends Component<IOrderModal> {
 				this.setText(this.errorMessageElement, '');
 				this.setDisabled(this.submitButton, false);
 			} else {
-				this.setText(this.errorMessageElement, settings.text.errorMessageAddress);
+				this.setText(
+					this.errorMessageElement,
+					settings.text.errorMessageAddress
+				);
 				this.setDisabled(this.submitButton, true);
 			}
 		});

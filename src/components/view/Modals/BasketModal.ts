@@ -24,7 +24,10 @@ export class BasketModal extends Component<IBasketModal> {
 			settings.basketSettings.btnBasket,
 			this.container
 		);
-		this.totalPriceElement = ensureElement(settings.basketSettings.basketPrice, this.container);
+		this.totalPriceElement = ensureElement(
+			settings.basketSettings.basketPrice,
+			this.container
+		);
 		this.orderButton.addEventListener('click', (event) => {
 			event.stopPropagation();
 			events.emit(settings.events.orderStart);
@@ -36,7 +39,10 @@ export class BasketModal extends Component<IBasketModal> {
 			this.productContainer.replaceChildren(...value);
 			this.orderButton.removeAttribute(settings.basketSettings.disabledClass);
 		} else {
-			this.orderButton.setAttribute(settings.basketSettings.disabledClass, settings.basketSettings.disabledClass);
+			this.orderButton.setAttribute(
+				settings.basketSettings.disabledClass,
+				settings.basketSettings.disabledClass
+			);
 			this.setText(this.productContainer, settings.text.emptyBasket);
 		}
 	}

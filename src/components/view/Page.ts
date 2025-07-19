@@ -16,16 +16,22 @@ export class Page extends Component<IPage> {
 	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
 
-		this.productsContainer = ensureElement(settings.pageSettings.pageContainer, this.container);
+		this.productsContainer = ensureElement(
+			settings.pageSettings.pageContainer,
+			this.container
+		);
 		this.totalProductsBasket = ensureElement(
 			settings.pageSettings.headerBasketCounter,
 			this.container
 		);
-		this.basketIcon = ensureElement(settings.pageSettings.headerBasket, this.container);
+		this.basketIcon = ensureElement(
+			settings.pageSettings.headerBasket,
+			this.container
+		);
 
 		this.basketIcon.addEventListener('click', (event) => {
 			event.stopPropagation();
-      this.events.emit(settings.events.basketOpen);
+			this.events.emit(settings.events.basketOpen);
 		});
 	}
 

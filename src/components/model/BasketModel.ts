@@ -7,7 +7,7 @@ export class BasketModel {
 		const total = this.items.reduce((item, current) => {
 			return item + current.price || 0;
 		}, 0);
-    return total;
+		return total;
 	}
 
 	get countProducts(): number {
@@ -26,7 +26,7 @@ export class BasketModel {
 		this.items = this.items.filter((item) => item.id !== id);
 	}
 
-	clear(){
+	clear() {
 		this.items = [];
 	}
 }

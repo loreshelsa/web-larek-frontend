@@ -9,7 +9,10 @@ export class App {
 	api: Api;
 	apiProduct: ApiProduct;
 
-	constructor(protected events: EventEmitter, protected productModel: ProductModel) {
+	constructor(
+		protected events: EventEmitter,
+		protected productModel: ProductModel
+	) {
 		this.api = new Api(API_URL);
 		this.apiProduct = new ApiProduct(this.api);
 		this.apiProduct.getProducts().then((res: IProductResponse) => {
@@ -17,5 +20,4 @@ export class App {
 			events.emit(settings.events.productsChanged);
 		});
 	}
-	
 }

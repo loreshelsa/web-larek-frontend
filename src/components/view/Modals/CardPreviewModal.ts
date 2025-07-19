@@ -27,19 +27,31 @@ export class CardPreviewModal extends Component<ICardPreviewModal> {
 
 	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
-		this.titleElement = ensureElement(settings.cardSettings.title, this.container);
-		this.categoryElement = ensureElement(settings.cardSettings.category, this.container);
+		this.titleElement = ensureElement(
+			settings.cardSettings.title,
+			this.container
+		);
+		this.categoryElement = ensureElement(
+			settings.cardSettings.category,
+			this.container
+		);
 		this.imageElement = ensureElement<HTMLImageElement>(
 			settings.cardSettings.image,
 			this.container
 		);
-		this.priceElement = ensureElement(settings.cardSettings.price, this.container);
+		this.priceElement = ensureElement(
+			settings.cardSettings.price,
+			this.container
+		);
 		this.addBasket = ensureElement<HTMLButtonElement>(
 			settings.cardSettings.btn,
 			this.container
 		);
 
-		this.descriptionElement = ensureElement(settings.cardSettings.description, this.container);
+		this.descriptionElement = ensureElement(
+			settings.cardSettings.description,
+			this.container
+		);
 
 		this.addBasket.addEventListener('click', (event) => {
 			event.stopPropagation();
@@ -67,7 +79,10 @@ export class CardPreviewModal extends Component<ICardPreviewModal> {
 	}
 
 	removeProductFromBasket() {
-		this.events.emit(settings.events.basketRemove, { id: this._id, update: false });
+		this.events.emit(settings.events.basketRemove, {
+			id: this._id,
+			update: false,
+		});
 	}
 
 	set id(value: string) {

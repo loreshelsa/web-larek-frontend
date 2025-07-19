@@ -2,7 +2,6 @@ export const API_URL = `${process.env.API_ORIGIN}/api/weblarek`;
 export const CDN_URL = `${process.env.API_ORIGIN}/content/weblarek`;
 
 export const settings = {
-
 	productSettings: {
 		title: '.card__title',
 		category: '.card__category',
@@ -30,7 +29,7 @@ export const settings = {
 	},
 
 	basketTemplate: '#basket',
-	
+
 	basketSettings: {
 		itemsList: '.basket__list',
 		itemClass: '.basket__item',
@@ -38,9 +37,9 @@ export const settings = {
 		basketPrice: '.basket__price',
 		disabledClass: 'disabled',
 	},
-	
+
 	basketCardTempate: '#card-basket',
-	basketCardSettings : {
+	basketCardSettings: {
 		title: '.card__title',
 		price: '.card__price',
 		itemIndex: '.basket__item-index',
@@ -55,7 +54,6 @@ export const settings = {
 		orderBtn: '.order__button',
 		error: '.form__errors',
 		activeBtn: 'button_alt-active',
-		
 	},
 
 	contactsTemplate: '#contacts',
@@ -68,8 +66,8 @@ export const settings = {
 
 	finishPaymentTemplate: '#success',
 	finishPaymentSettings: {
-		orderSuccessDescription : '.order-success__description',
-		orderSuccessClose : '.order-success__close',
+		orderSuccessDescription: '.order-success__description',
+		orderSuccessClose: '.order-success__close',
 	},
 
 	modalTemplate: '#modal-container',

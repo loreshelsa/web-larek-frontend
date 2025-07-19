@@ -22,7 +22,7 @@ export class PaymentSuccessModal extends Component<IPaymentSuccessModal> {
 			this.container
 		);
 
-    this.successButton.addEventListener('click', (event) => {
+		this.successButton.addEventListener('click', (event) => {
 			event.stopPropagation();
 			event.preventDefault();
 			events.emit(settings.events.orderSuccess);

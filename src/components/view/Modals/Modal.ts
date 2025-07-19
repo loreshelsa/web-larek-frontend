@@ -16,7 +16,10 @@ export class Modal extends Component<IModal> {
 
 	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
-		this.contentElement = ensureElement(settings.modalSettings.content, this.container);
+		this.contentElement = ensureElement(
+			settings.modalSettings.content,
+			this.container
+		);
 		this.closeButton = ensureElement<HTMLButtonElement>(
 			settings.modalSettings.close,
 			this.container
@@ -28,8 +31,9 @@ export class Modal extends Component<IModal> {
 		document.addEventListener('click', (event) => {
 			if (
 				event.target !== this.contentElement &&
-				(event.target as HTMLElement).closest(settings.modalSettings.content) !==
-					this.contentElement
+				(event.target as HTMLElement).closest(
+					settings.modalSettings.content
+				) !== this.contentElement
 			) {
 				this.events.emit(settings.events.modalClose);
 			}
@@ -37,7 +41,9 @@ export class Modal extends Component<IModal> {
 	}
 
 	open() {
-		if (!this.container.classList.contains(settings.modalSettings.activeClass)) {
+		if (
+			!this.container.classList.contains(settings.modalSettings.activeClass)
+		) {
 			this.toggleClass(this.container, settings.modalSettings.activeClass);
 		}
 	}

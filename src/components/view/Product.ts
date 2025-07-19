@@ -17,13 +17,22 @@ export class Product extends Component<IProduct> {
 
 	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
-		this.titleElement = ensureElement(settings.productSettings.title, this.container);
-		this.categoryElement = ensureElement(settings.productSettings.category, this.container);
+		this.titleElement = ensureElement(
+			settings.productSettings.title,
+			this.container
+		);
+		this.categoryElement = ensureElement(
+			settings.productSettings.category,
+			this.container
+		);
 		this.imageElement = ensureElement<HTMLImageElement>(
 			settings.productSettings.image,
 			this.container
 		);
-		this.priceElement = ensureElement(settings.productSettings.price, this.container);
+		this.priceElement = ensureElement(
+			settings.productSettings.price,
+			this.container
+		);
 		container.addEventListener('click', (event) => {
 			event.stopPropagation();
 			this.openProduct();
@@ -37,7 +46,7 @@ export class Product extends Component<IProduct> {
 			category: this.category,
 			image: this.image,
 			price: this.price,
-			description: this.description
+			description: this.description,
 		};
 		this.events.emit(settings.events.productOpen, product);
 	}
@@ -87,7 +96,7 @@ export class Product extends Component<IProduct> {
 		return this.imageElement.getAttribute('src');
 	}
 
-	set description(value: string){
+	set description(value: string) {
 		this._description = value;
 	}
 

@@ -27,15 +27,20 @@ const apiOrder = new ApiOrder(api);
 
 const app = new App(events, productModel);
 const page = new Page(
-	ensureElement(settings.pageSettings.pageWrapper, document.body) as HTMLElement,
+	ensureElement(
+		settings.pageSettings.pageWrapper,
+		document.body
+	) as HTMLElement,
 	events
 );
 const template = ensureElement<HTMLTemplateElement>(
-	settings.catalogTemplate, document.body
+	settings.catalogTemplate,
+	document.body
 ) as HTMLTemplateElement;
 
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>(
-	settings.cardTemplate, document.body
+	settings.cardTemplate,
+	document.body
 ) as HTMLTemplateElement;
 
 const modal = new Modal(
@@ -58,13 +63,15 @@ const basketCardTemplate = ensureElement<HTMLTemplateElement>(
 const basketModal = new BasketModal(cloneTemplate(basketTemplate), events);
 
 const orderTemplate = ensureElement<HTMLTemplateElement>(
-	settings.orderTemplate, document.body
+	settings.orderTemplate,
+	document.body
 ) as HTMLTemplateElement;
 
 const orderModal = new OrderModal(cloneTemplate(orderTemplate), events);
 
 const contactsTemplate = ensureElement<HTMLTemplateElement>(
-	settings.contactsTemplate, document.body
+	settings.contactsTemplate,
+	document.body
 ) as HTMLTemplateElement;
 
 const contactsModal = new ContactsModal(
@@ -73,7 +80,8 @@ const contactsModal = new ContactsModal(
 );
 
 const finishPaymentTemplate = ensureElement<HTMLTemplateElement>(
-	settings.finishPaymentTemplate, document.body
+	settings.finishPaymentTemplate,
+	document.body
 ) as HTMLTemplateElement;
 
 const finishPaymentModal = new PaymentSuccessModal(
