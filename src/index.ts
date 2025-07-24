@@ -21,7 +21,7 @@ import { API_URL, settings } from './utils/constants';
 
 const events = new EventEmitter();
 const productModel = new ProductModel();
-const basketModel = new BasketModel();
+const basketModel = new BasketModel(events);
 const api = new Api(API_URL);
 const apiOrder = new ApiOrder(api);
 
@@ -103,10 +103,11 @@ events.on(settings.events.productsChanged, () => {
 	});
 });
 
-events.on(settings.events.productOpen, (product: IProduct) => {
+events.on(settings.events.productOpen, ({ id }: { id: string }) => {
 	const inBasket = basketModel.productsFromBasket.some(
-		(item) => item.id === product.id
+		(item) => item.id === id
 	);
+	const product = productModel.getProductById(id);
 	const previewModalContent = cardPreviewModal.render({
 		...product,
 		inBasket: inBasket,
@@ -120,9 +121,9 @@ events.on(settings.events.modalClose, () => {
 	modal.close();
 });
 
-events.on(settings.events.basketAdd, (product: IProduct) => {
+events.on(settings.events.basketAdd, ({id}: Partial<IProduct>) => {
+	const product = productModel.getProductById(id);
 	basketModel.addProductToBasket(product);
-	events.emit(settings.events.basketChanged);
 });
 
 events.on(settings.events.basketChanged, () => {
@@ -158,7 +159,6 @@ events.on(
 		if (update) {
 			events.emit(settings.events.basketOpen);
 		}
-		events.emit(settings.events.basketChanged);
 	}
 );
 
@@ -193,22 +193,21 @@ events.on(
 		} as IOrder;
 
 		apiOrder.submitOrder(request).then(() => {
-			events.emit(settings.events.orderCompleted);
+			finishPayment();
 		});
 	}
 );
 
-events.on(settings.events.orderCompleted, () => {
+function finishPayment() {
 	const finishPaymentModalContent = finishPaymentModal.render({
 		total: basketModel.totalPrice,
 	});
 	modal.render({ content: finishPaymentModalContent });
 	modal.open();
-});
+}
 
 events.on(settings.events.orderSuccess, () => {
 	basketModel.clear();
 	orderModel.clear();
-	events.emit(settings.events.basketChanged);
 	events.emit(settings.events.modalClose);
 });

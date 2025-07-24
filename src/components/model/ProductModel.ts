@@ -10,4 +10,8 @@ export class ProductModel {
 	getProducts(): IProduct[] {
 		return this.items;
 	}
+
+	getProductById(id: string): IProduct {
+		return this.items.find(item => item.id === id);
+	}
 }

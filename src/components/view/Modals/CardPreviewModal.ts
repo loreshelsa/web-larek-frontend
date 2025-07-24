@@ -2,7 +2,7 @@ import { Component } from '../../base/component';
 import { EventEmitter } from '../../base/events';
 import { ensureElement } from '../../../utils/utils';
 import { IProduct } from '../../../types';
-import { settings } from '../../../utils/constants';
+import { CDN_URL, settings } from '../../../utils/constants';
 
 export interface ICardPreviewModal {
 	id: string;
@@ -17,7 +17,6 @@ export interface ICardPreviewModal {
 export class CardPreviewModal extends Component<ICardPreviewModal> {
 	private _id: string;
 	private added: boolean;
-	private _price: number;
 	protected titleElement: HTMLElement;
 	protected categoryElement: HTMLElement;
 	protected imageElement: HTMLImageElement;
@@ -70,17 +69,13 @@ export class CardPreviewModal extends Component<ICardPreviewModal> {
 	addProductToBasket() {
 		const product: Partial<IProduct> = {
 			id: this.id,
-			title: this.title,
-			category: this.category,
-			image: this.image,
-			price: this.price,
 		};
 		this.events.emit(settings.events.basketAdd, product);
 	}
 
 	removeProductFromBasket() {
 		this.events.emit(settings.events.basketRemove, {
-			id: this._id,
+			id: this.id,
 			update: false,
 		});
 	}
@@ -105,29 +100,16 @@ export class CardPreviewModal extends Component<ICardPreviewModal> {
 		this.setText(this.categoryElement, value);
 	}
 
-	get category(): string {
-		return this.categoryElement.textContent as string;
-	}
-
-	set price(value: number) {
+	set price(value: number | null) {
 		if (value !== null) {
 			this.setText(this.priceElement, `${value} синапсов`);
 		} else {
 			this.setText(this.priceElement, settings.text.invaluable);
 		}
-		this._price = value;
-	}
-
-	get price(): number {
-		return this._price;
 	}
 
 	set image(src: string) {
-		this.setImage(this.imageElement, src, this.title);
-	}
-
-	get image(): string {
-		return this.imageElement.getAttribute('src') as string;
+		this.setImage(this.imageElement, `${CDN_URL}${src}`, this.title);
 	}
 
 	set description(value: string) {

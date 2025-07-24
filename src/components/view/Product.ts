@@ -10,8 +10,6 @@ export class Product extends Component<IProduct> {
 	protected imageElement: HTMLImageElement;
 	protected priceElement: HTMLElement;
 	private _id: string;
-	private _price: number;
-	private _description: string;
 
 	product: IProduct;
 
@@ -42,11 +40,6 @@ export class Product extends Component<IProduct> {
 	openProduct() {
 		const product = {
 			id: this.id,
-			title: this.title,
-			category: this.category,
-			image: this.image,
-			price: this.price,
-			description: this.description,
 		};
 		this.events.emit(settings.events.productOpen, product);
 	}
@@ -71,36 +64,15 @@ export class Product extends Component<IProduct> {
 		this.setText(this.categoryElement, value);
 	}
 
-	get category(): string {
-		return this.categoryElement.textContent;
-	}
-
-	set price(value: number) {
+	set price(value: number | null) {
 		if (value !== null) {
 			this.setText(this.priceElement, `${value} синапсов`);
 		} else {
 			this.setText(this.priceElement, settings.text.invaluable);
 		}
-		this._price = value;
-	}
-
-	get price(): number {
-		return this._price;
 	}
 
 	set image(src: string) {
 		this.setImage(this.imageElement, `${CDN_URL}${src}`, this.title);
-	}
-
-	get image(): string {
-		return this.imageElement.getAttribute('src');
-	}
-
-	set description(value: string) {
-		this._description = value;
-	}
-
-	get description(): string {
-		return this._description;
 	}
 }

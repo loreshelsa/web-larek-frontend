@@ -104,7 +104,6 @@ export const settings = {
 		orderStart: 'order:start',
 		orderFirstStepComplete: 'order:firstStepComplete',
 		orderSubmit: 'order:submit',
-		orderCompleted: 'order:completed',
 		orderSuccess: 'order:success',
 	},
 };
