@@ -6,11 +6,13 @@ import { EventEmitter } from '../../base/events';
 interface IContactsModal {
 	phoneNumber: string;
 	email: string;
+	errorMessage: string;
+	disabled: boolean;
 }
 
 export class ContactsModal extends Component<IContactsModal> {
-	private phoneNumber: string;
-	private email: string;
+	private phoneNumber: string = '';
+	private email: string = '';
 
 	emailInputElement: HTMLElement;
 	phoneInputElement: HTMLElement;
@@ -47,34 +49,28 @@ export class ContactsModal extends Component<IContactsModal> {
 			});
 		});
 
-		this.emailInputElement.addEventListener('input', (event) => {
+		this.emailInputElement.addEventListener('change', (event) => {
 			event.stopPropagation();
 			this.email = (event.target as HTMLInputElement).value;
-			if (this.email.length) {
-				this.setText(this.errorMessageElement, '');
-			} else {
-				this.setText(this.errorMessageElement, settings.text.errorMessageEmail);
-			}
-			this.checkInputsEmpty();
+			this.events.emit(settings.events.contactEmailChanged, {
+				email: this.email,
+			});
 		});
 
-		this.phoneInputElement.addEventListener('input', (event) => {
+		this.phoneInputElement.addEventListener('change', (event) => {
 			event.stopPropagation();
 			this.phoneNumber = (event.target as HTMLInputElement).value;
-			if (this.phoneNumber.length) {
-				this.setText(this.errorMessageElement, '');
-			} else {
-				this.setText(this.errorMessageElement, settings.text.errorMessagePhone);
-			}
-			this.checkInputsEmpty();
+			this.events.emit(settings.events.contactPhoneChanged, {
+				phone: this.phoneNumber,
+			});
 		});
 	}
 
-	checkInputsEmpty() {
-		if (this.email?.length && this.phoneNumber?.length) {
-			this.setDisabled(this.submitButton, false);
-		} else {
-			this.setDisabled(this.submitButton, true);
-		}
+	set errorMessage(errorMessageValue: string) {
+		this.setText(this.errorMessageElement, errorMessageValue);
+	}
+
+	set disabled(value: boolean) {
+		this.setDisabled(this.submitButton, value);
 	}
 }

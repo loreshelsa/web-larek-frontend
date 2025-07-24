@@ -121,7 +121,7 @@ events.on(settings.events.modalClose, () => {
 	modal.close();
 });
 
-events.on(settings.events.basketAdd, ({id}: Partial<IProduct>) => {
+events.on(settings.events.basketAdd, ({ id }: Partial<IProduct>) => {
 	const product = productModel.getProductById(id);
 	basketModel.addProductToBasket(product);
 });
@@ -169,6 +169,45 @@ events.on(settings.events.orderStart, () => {
 });
 
 events.on(
+	settings.events.contactEmailChanged,
+	({ email }: { email: string }) => {
+		const errorMessage = orderModel.validationEmail(email);
+		const contactModalContent = contactsModal.render({
+			errorMessage: errorMessage,
+			disabled: orderModel.contactDisabled,
+		});
+		modal.render({ content: contactModalContent });
+		modal.open();
+	}
+);
+
+events.on(
+	settings.events.contactPhoneChanged,
+	({ phone }: { phone: string }) => {
+		const errorMessage = orderModel.validationPhone(phone);
+		const contactModalContent = contactsModal.render({
+			errorMessage: errorMessage,
+			disabled: orderModel.contactDisabled,
+		});
+		modal.render({ content: contactModalContent });
+		modal.open();
+	}
+);
+
+events.on(
+	settings.events.orderAddressChanged,
+	({ address }: { address: string }) => {
+		const errorMessage = orderModel.validationAddress(address);
+		const orderModalContent = orderModal.render({
+			errorMessage: errorMessage,
+			disabled: orderModel.addressDisabled,
+		});
+		modal.render({ content: orderModalContent });
+		modal.open();
+	}
+);
+
+events.on(
 	settings.events.orderFirstStepComplete,
 	({ address, paymentMethod }: { address: string; paymentMethod: string }) => {
 		orderModel.setOrderInfo(paymentMethod, address);
@@ -204,10 +243,10 @@ function finishPayment() {
 	});
 	modal.render({ content: finishPaymentModalContent });
 	modal.open();
+	basketModel.clear();
+	orderModel.clear();
 }
 
 events.on(settings.events.orderSuccess, () => {
-	basketModel.clear();
-	orderModel.clear();
 	events.emit(settings.events.modalClose);
 });

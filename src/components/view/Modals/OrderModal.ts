@@ -6,6 +6,8 @@ import { EventEmitter } from '../../base/events';
 interface IOrderModal {
 	address: string;
 	paymentMethod: string;
+	errorMessage: string;
+	disabled: boolean;
 }
 
 export class OrderModal extends Component<IOrderModal> {
@@ -58,20 +60,12 @@ export class OrderModal extends Component<IOrderModal> {
 			}
 		});
 
-		this.addressInputElement.addEventListener('input', (event) => {
+		this.addressInputElement.addEventListener('change', (event) => {
 			event.stopPropagation();
 			this.address = (event.target as HTMLInputElement).value;
-
-			if (this.address.length) {
-				this.setText(this.errorMessageElement, '');
-				this.setDisabled(this.submitButton, false);
-			} else {
-				this.setText(
-					this.errorMessageElement,
-					settings.text.errorMessageAddress
-				);
-				this.setDisabled(this.submitButton, true);
-			}
+			this.events.emit(settings.events.orderAddressChanged, {
+				address: this.address,
+			});
 		});
 
 		this.paymentCardMethodElement.addEventListener('click', (event) => {
@@ -98,5 +92,13 @@ export class OrderModal extends Component<IOrderModal> {
 		this.paymentMethod = activeBtn.getAttribute('name');
 		activeBtn.classList.add(settings.orderSettings.activeBtn);
 		inactiveBtn.classList.remove(settings.orderSettings.activeBtn);
+	}
+
+	set errorMessage(errorMessageValue: string) {
+		this.setText(this.errorMessageElement, errorMessageValue);
+	}
+
+	set disabled(value: boolean) {
+		this.setDisabled(this.submitButton, value);
 	}
 }
